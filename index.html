@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>域名猎手 | Domain Hunter</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--card:#12121a;--card2:#1a1a28;--border:#2a2a3a;
+  --text:#e4e4ef;--text2:#8888a0;--accent:#6c5ce7;--accent2:#a29bfe;
+  --green:#00b894;--green2:#55efc4;--orange:#fdcb6e;--red:#ff6b6b;
+  --blue:#74b9ff;--pink:#fd79a8;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+
+/* Header */
+.header{text-align:center;padding:40px 0 20px;position:relative}
+.header h1{font-size:2.5em;background:linear-gradient(135deg,var(--accent),var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.header p{color:var(--text2);font-size:1.1em}
+.stats-bar{display:flex;gap:16px;justify-content:center;margin:24px 0;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 24px;text-align:center;min-width:140px}
+.stat .num{font-size:1.8em;font-weight:700;color:var(--accent2)}
+.stat .label{color:var(--text2);font-size:0.85em;margin-top:4px}
+.stat.green .num{color:var(--green2)}
+.stat.orange .num{color:var(--orange)}
+.stat.red .num{color:var(--red)}
+
+/* Search */
+.search-box{position:relative;max-width:600px;margin:24px auto}
+.search-box input{width:100%;padding:16px 20px 16px 48px;background:var(--card);border:2px solid var(--border);border-radius:12px;color:var(--text);font-size:1.1em;outline:none;transition:border-color .2s}
+.search-box input:focus{border-color:var(--accent)}
+.search-box input::placeholder{color:var(--text2)}
+.search-box .icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.3em;opacity:.5}
+.search-hint{text-align:center;color:var(--text2);font-size:0.85em;margin-top:8px}
+
+/* Tabs */
+.tabs{display:flex;gap:8px;margin:24px 0 16px;flex-wrap:wrap}
+.tab{padding:10px 20px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .2s;font-size:0.95em}
+.tab:hover{border-color:var(--accent);color:var(--text)}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab .count{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:10px;font-size:0.8em;margin-left:6px}
+
+/* Domain Grid */
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:16px 0}
+.domain-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.domain-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 20px rgba(108,92,231,.15)}
+.domain-card .name{font-size:1.1em;font-weight:600;font-family:'SF Mono',Monaco,monospace;color:var(--text)}
+.domain-card .meta{color:var(--text2);font-size:0.8em;margin-top:6px}
+.domain-card .badge{position:absolute;top:8px;right:8px;font-size:0.7em;padding:2px 8px;border-radius:6px;font-weight:600}
+.badge-free{background:rgba(0,184,148,.15);color:var(--green2)}
+.badge-expire{background:rgba(253,203,110,.15);color:var(--orange)}
+.badge-pure{background:rgba(116,185,255,.15);color:var(--blue)}
+.badge-urgent{background:rgba(255,107,107,.15);color:var(--red)}
+
+/* Results info */
+.results-info{color:var(--text2);font-size:0.9em;padding:8px 0;display:flex;justify-content:space-between;align-items:center}
+.sort-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.85em}
+.sort-btn:hover{border-color:var(--accent)}
+
+/* Pagination */
+.pagination{display:flex;justify-content:center;gap:8px;margin:24px 0}
+.page-btn{padding:8px 16px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .2s}
+.page-btn:hover{border-color:var(--accent);color:var(--text)}
+.page-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+
+/* Footer */
+.footer{text-align:center;padding:40px 0;color:var(--text2);font-size:0.85em;border-top:1px solid var(--border);margin-top:40px}
+
+/* Loading */
+.loading{text-align:center;padding:40px;color:var(--text2)}
+.loading .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Scroll to top */
+.scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:1.2em;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(108,92,231,.3);z-index:100}
+.scroll-top.show{display:flex}
+
+/* Progress bar */
+.progress-wrap{max-width:600px;margin:0 auto 16px}
+.progress-bar{height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--pink));border-radius:3px;transition:width .5s}
+.progress-text{text-align:center;color:var(--text2);font-size:0.8em;margin-top:4px}
+
+@media(max-width:640px){
+  .header h1{font-size:1.8em}
+  .stats-bar{gap:8px}
+  .stat{min-width:100px;padding:12px 16px}
+  .stat .num{font-size:1.3em}
+  .domain-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🎯 域名猎手</h1>
+    <p>4字母 .com 域名可用性扫描 | 实时数据</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">加载中...</div>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="statsBar">
+    <div class="stat green"><div class="num" id="statAvail">-</div><div class="label">可注册</div></div>
+    <div class="stat orange"><div class="num" id="statExpire">-</div><div class="label">即将到期</div></div>
+    <div class="stat"><div class="num" id="statPure">-</div><div class="label">纯字母</div></div>
+    <div class="stat"><div class="num" id="statMixed">-</div><div class="label">含数字</div></div>
+  </div>
+
+  <div class="search-box">
+    <span class="icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="搜索域名，如 ab 匹配 abcd.com 和 acbd.com ..." autocomplete="off">
+  </div>
+  <div class="search-hint">支持模糊匹配：输入任意字符，匹配域名中任意位置包含该字符序列的域名</div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="available">✅ 可注册 <span class="count" id="tabAvail">0</span></div>
+    <div class="tab" data-tab="expiring">⏰ 即将到期 <span class="count" id="tabExpire">0</span></div>
+    <div class="tab" data-tab="pure">🔤 纯字母 <span class="count" id="tabPure">0</span></div>
+  </div>
+
+  <div class="results-info">
+    <span id="resultCount">加载中...</span>
+    <button class="sort-btn" id="sortBtn" onclick="toggleSort()">按名称排序</button>
+  </div>
+
+  <div class="domain-grid" id="domainGrid">
+    <div class="loading"><div class="spinner"></div>正在加载域名数据...</div>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+
+  <div class="footer">
+    <p>域名猎手 — 数据来自 WHOIS 实时查询 | 扫描仍在进行中，数据持续更新</p>
+    <p style="margin-top:8px">Generated by <a href="https://github.com/handsomezhuzhu/name" style="color:var(--accent2)">Domain Hunter</a></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+let DATA = {available:[], expiring:[]};
+let currentTab = 'available';
+let currentPage = 1;
+let sortMode = 'name'; // name | days
+const PAGE_SIZE = 120;
+
+// Fuzzy match: "ab" matches "abcd.com" AND "acbd.com"
+function fuzzyMatch(domain, query) {
+  const q = query.toLowerCase().replace('.com','');
+  const d = domain.toLowerCase().replace('.com','');
+  if (!q) return true;
+  // Substring match
+  if (d.includes(q)) return true;
+  // Character sequence match (order preserved, not necessarily adjacent)
+  let qi = 0;
+  for (let di = 0; di < d.length && qi < q.length; di++) {
+    if (d[di] === q[qi]) qi++;
+  }
+  return qi === q.length;
+}
+
+function getFilteredData() {
+  const query = document.getElementById('searchInput').value.trim();
+  let list;
+  if (currentTab === 'available') list = DATA.available;
+  else if (currentTab === 'expiring') list = DATA.expiring;
+  else list = DATA.available.filter(d => d.type === 'pure');
+
+  if (query) {
+    list = list.filter(item => fuzzyMatch(item.domain, query));
+  }
+
+  if (sortMode === 'days' && currentTab === 'expiring') {
+    list = [...list].sort((a,b) => (a.days_left||999) - (b.days_left||999));
+  } else {
+    list = [...list].sort((a,b) => a.domain.localeCompare(b.domain));
+  }
+  return list;
+}
+
+function render() {
+  const list = getFilteredData();
+  const totalPages = Math.ceil(list.length / PAGE_SIZE);
+  if (currentPage > totalPages) currentPage = 1;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageData = list.slice(start, start + PAGE_SIZE);
+
+  const grid = document.getElementById('domainGrid');
+  if (pageData.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2);grid-column:1/-1">没有找到匹配的域名</div>';
+  } else {
+    grid.innerHTML = pageData.map(item => {
+      if (item.domain) {
+        // Expiring domain
+        const urgent = item.days_left <= 7;
+        return `<div class="domain-card" onclick="copyDomain('${item.domain}')">
+          <span class="badge ${urgent?'badge-urgent':'badge-expire'}">${item.days_left}天</span>
+          <div class="name">${item.domain}</div>
+          <div class="meta">${item.expiry||''} · ${item.registrar||''}</div>
+        </div>`;
+      }
+      return '';
+    }).join('') || list.slice(start, start + PAGE_SIZE).map(item => {
+      const domain = typeof item === 'string' ? item : item.domain;
+      const type = typeof item === 'string' ? '' : item.type;
+      return `<div class="domain-card" onclick="copyDomain('${domain}')">
+        <span class="badge badge-free">可注册</span>
+        ${type==='pure'?'<span class="badge badge-pure" style="top:8px;right:auto;left:8px">纯字母</span>':''}
+        <div class="name">${domain}</div>
+        <div class="meta">点击复制</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Pagination
+  const pag = document.getElementById('pagination');
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+  let html = '';
+  html += `<button class="page-btn" onclick="goPage(1)" ${currentPage===1?'disabled':''}>首页</button>`;
+  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  const range = 3;
+  for (let i = Math.max(1,currentPage-range); i <= Math.min(totalPages,currentPage+range); i++) {
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+  html += `<button class="page-btn" onclick="goPage(${totalPages})" ${currentPage===totalPages?'disabled':''}>末页</button>`;
+  pag.innerHTML = html;
+
+  document.getElementById('resultCount').textContent = `显示 ${start+1}-${Math.min(start+PAGE_SIZE,list.length)} / 共 ${list.length} 个域名`;
+}
+
+function goPage(p) { currentPage = p; render(); window.scrollTo({top:300,behavior:'smooth'}); }
+
+function toggleSort() {
+  sortMode = sortMode === 'name' ? 'days' : 'name';
+  document.getElementById('sortBtn').textContent = sortMode === 'name' ? '按名称排序' : '按到期时间排序';
+  currentPage = 1;
+  render();
+}
+
+function copyDomain(domain) {
+  navigator.clipboard.writeText(domain).then(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '✅ 已复制 ' + domain;
+    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:10px 20px;border-radius:8px;font-size:0.9em;z-index:200;animation:fadeIn .3s';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 1500);
+  });
+}
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentTab = tab.dataset.tab;
+    currentPage = 1;
+    sortMode = 'name';
+    document.getElementById('sortBtn').textContent = '按名称排序';
+    render();
+  });
+});
+
+// Search
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { currentPage = 1; render(); }, 200);
+});
+
+// Scroll to top button
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+});
+
+// Load data
+fetch('domains.json').then(r=>r.json()).then(data => {
+  DATA.available = data.available || [];
+  DATA.expiring = data.expiring || [];
+  const s = data.stats || {};
+  document.getElementById('statAvail').textContent = (s.available_count||0).toLocaleString();
+  document.getElementById('statExpire').textContent = (s.expiring_count||0).toLocaleString();
+  document.getElementById('statPure').textContent = (s.pure_letter_count||0).toLocaleString();
+  document.getElementById('statMixed').textContent = (s.with_number_count||0).toLocaleString();
+  document.getElementById('tabAvail').textContent = (s.available_count||0).toLocaleString();
+  document.getElementById('tabExpire').textContent = (s.expiring_count||0).toLocaleString();
+  document.getElementById('tabPure').textContent = (s.pure_letter_count||0).toLocaleString();
+  const pct = s.total_target ? Math.min(100, (s.total_checked||0)*100/s.total_target) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = `扫描进度: ${(s.total_checked||0).toLocaleString()} / ${(s.total_target||1679616).toLocaleString()} (${pct.toFixed(1)}%)`;
+  render();
+}).catch(e => {
+  document.getElementById('domainGrid').innerHTML = '<div class="loading">数据加载失败，请刷新重试</div>';
+});
+</script>
+<style>@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}</style>
+</body>
+</html>
