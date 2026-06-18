@@ -533,7 +533,9 @@ window.addEventListener('scroll', () => {
 
 // Load
 fetch('domains.json').then(r=>r.json()).then(data => {
-  DATA = data.domains || [];
+  // Convert compact arrays [domain,status,expiry,days_left] to objects
+  const raw = data.domains || [];
+  DATA = raw.map(d => Array.isArray(d) ? {domain:d[0],status:d[1],expiry:d[2],days_left:d[3]} : d);
   const counts = {};
   DATA.forEach(d => { counts[d.status] = (counts[d.status]||0)+1; });
   document.getElementById('sAvail').textContent = (counts.available||0).toLocaleString();
