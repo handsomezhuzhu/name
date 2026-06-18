@@ -145,7 +145,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="container">
   <div class="header">
     <h1><span class="grad">🎯 域名猎手</span></h1>
-    <p>3 / 4 / 5 字母 .com 域名可抢注扫描</p>
+    <p>3 / 4 字母 .com 域名可抢注扫描</p>
   </div>
 
   <div class="progress-section" id="progressSection"></div>
@@ -167,7 +167,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
       <button class="fbtn active" data-filter="len" data-val="all">全部</button>
       <button class="fbtn len3" data-filter="len" data-val="3">3字母</button>
       <button class="fbtn len4" data-filter="len" data-val="4">4字母</button>
-      <button class="fbtn len5" data-filter="len" data-val="5">5字母</button>
       <span class="filter-label" style="margin-left:12px">状态</span>
       <button class="fbtn active" data-filter="status" data-val="all">全部</button>
       <button class="fbtn" data-filter="status" data-val="available">✅ 可注册</button>
@@ -547,16 +546,14 @@ fetch('domains.json').then(r=>r.json()).then(data => {
 
   const len3 = DATA.filter(d=>getLen(d)===3).length;
   const len4 = DATA.filter(d=>getLen(d)===4).length;
-  const len5 = DATA.filter(d=>getLen(d)===5).length;
   const alpha = DATA.filter(d=>!hasDigit(d.domain.replace('.com',''))).length;
   document.querySelector('[data-val="3"]').innerHTML = `3字母 <span class="cnt">${len3.toLocaleString()}</span>`;
   document.querySelector('[data-val="4"]').innerHTML = `4字母 <span class="cnt">${len4.toLocaleString()}</span>`;
-  document.querySelector('[data-val="5"]').innerHTML = `5字母 <span class="cnt">${len5.toLocaleString()}</span>`;
   document.querySelector('[data-val="all"]').innerHTML = `全部 <span class="cnt">${DATA.length.toLocaleString()}</span>`;
 
   // Progress bars
   const checked = data.checked || {};
-  const targets = {3:46656, 4:1679616, 5:11881376};
+  const targets = {3:46656, 4:1679616};
   const ps = document.getElementById('progressSection');
   let ph = '';
   for (const [len, target] of Object.entries(targets)) {
