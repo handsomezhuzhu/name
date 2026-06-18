@@ -8,157 +8,296 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0a0a0f;--card:#12121a;--card2:#1a1a28;--border:#2a2a3a;
-  --text:#e4e4ef;--text2:#8888a0;--accent:#6c5ce7;--accent2:#a29bfe;
-  --green:#00b894;--green2:#55efc4;--orange:#fdcb6e;--red:#ff6b6b;
-  --blue:#74b9ff;--pink:#fd79a8;
+  --bg:#08080e;--bg2:#0c0c14;--card:#111119;--card2:#181825;--card3:#1e1e2e;
+  --border:#25253a;--border2:#33334d;
+  --text:#e4e4f0;--text2:#7c7c9a;--text3:#55556e;
+  --accent:#7c6aef;--accent2:#a89cfe;--accent-bg:rgba(124,106,239,.08);
+  --green:#22c58e;--green2:#5ef5c0;--green-bg:rgba(34,197,142,.08);
+  --orange:#f0b429;--orange2:#ffd166;--orange-bg:rgba(240,180,41,.08);
+  --red:#ef4444;--red2:#ff7878;--red-bg:rgba(239,68,68,.08);
+  --blue:#3b82f6;--blue2:#78b4ff;--blue-bg:rgba(59,130,246,.08);
+  --pink:#ec4899;--pink2:#ff85b3;--pink-bg:rgba(236,72,153,.08);
+  --cyan:#06b6d4;--cyan2:#67e8f9;--cyan-bg:rgba(6,182,212,.08);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.container{max-width:1200px;margin:0 auto;padding:20px}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.container{max-width:1300px;margin:0 auto;padding:16px 20px}
 
 /* Header */
-.header{text-align:center;padding:40px 0 20px;position:relative}
-.header h1{font-size:2.5em;background:linear-gradient(135deg,var(--accent),var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
-.header p{color:var(--text2);font-size:1.1em}
-.stats-bar{display:flex;gap:16px;justify-content:center;margin:24px 0;flex-wrap:wrap}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 24px;text-align:center;min-width:140px}
-.stat .num{font-size:1.8em;font-weight:700;color:var(--accent2)}
-.stat .label{color:var(--text2);font-size:0.85em;margin-top:4px}
-.stat.green .num{color:var(--green2)}
-.stat.orange .num{color:var(--orange)}
-.stat.red .num{color:var(--red)}
+.header{text-align:center;padding:20px 0 6px}
+.header h1{font-size:2em;font-weight:800;letter-spacing:-.02em}
+.header h1 .grad{background:linear-gradient(135deg,var(--accent),var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{color:var(--text2);font-size:.88em;margin-top:3px}
 
-/* Search */
-.search-box{position:relative;max-width:600px;margin:24px auto}
-.search-box input{width:100%;padding:16px 20px 16px 48px;background:var(--card);border:2px solid var(--border);border-radius:12px;color:var(--text);font-size:1.1em;outline:none;transition:border-color .2s}
+/* Progress */
+.progress-section{margin:12px auto;max-width:600px}
+.progress-row{display:flex;align-items:center;gap:10px;margin:5px 0}
+.progress-label{width:40px;font-size:.75em;color:var(--text2);text-align:right;font-weight:600}
+.progress-bar{flex:1;height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.progress-fill.len3{background:linear-gradient(90deg,var(--cyan),var(--blue))}
+.progress-fill.len4{background:linear-gradient(90deg,var(--accent),var(--pink))}
+.progress-fill.len5{background:linear-gradient(90deg,var(--orange),var(--red))}
+.progress-pct{font-size:.7em;color:var(--text3);min-width:65px;font-variant-numeric:tabular-nums}
+
+/* Stats Grid */
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:14px 0}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;transition:border-color .2s}
+.stat-card:hover{border-color:var(--border2)}
+.stat-card .num{font-size:1.5em;font-weight:700;font-variant-numeric:tabular-nums}
+.stat-card .label{color:var(--text2);font-size:.7em;margin-top:2px;font-weight:500}
+.stat-card.green .num{color:var(--green2)} .stat-card.green{border-color:rgba(34,197,142,.12)}
+.stat-card.orange .num{color:var(--orange2)} .stat-card.orange{border-color:rgba(240,180,41,.12)}
+.stat-card.red .num{color:var(--red2)} .stat-card.red{border-color:rgba(239,68,68,.12)}
+.stat-card.pink .num{color:var(--pink2)} .stat-card.pink{border-color:rgba(236,72,153,.12)}
+.stat-card.blue .num{color:var(--blue2)} .stat-card.blue{border-color:rgba(59,130,246,.12)}
+.stat-card.cyan .num{color:var(--cyan2)} .stat-card.cyan{border-color:rgba(6,182,212,.12)}
+
+/* Filter Panel */
+.filter-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;margin:12px 0;overflow:hidden}
+.filter-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 14px}
+.filter-row+.filter-row{border-top:1px solid var(--border)}
+.filter-label{font-size:.72em;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-right:4px;min-width:40px;flex-shrink:0}
+.fbtn{padding:5px 12px;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--text2);cursor:pointer;font-size:.78em;font-weight:500;transition:all .15s;white-space:nowrap;user-select:none}
+.fbtn:hover{border-color:var(--accent);color:var(--text)}
+.fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.fbtn.len3.active{background:var(--cyan);border-color:var(--cyan)}
+.fbtn.len4.active{background:var(--accent);border-color:var(--accent)}
+.fbtn.len5.active{background:var(--orange);border-color:var(--orange)}
+.fbtn .cnt{opacity:.65;font-size:.85em;margin-left:2px}
+
+/* Toggle button (two-state) */
+.toggle-group{display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.toggle-btn{padding:5px 12px;background:transparent;border:none;color:var(--text2);cursor:pointer;font-size:.78em;font-weight:500;transition:all .15s}
+.toggle-btn+.toggle-btn{border-left:1px solid var(--border)}
+.toggle-btn.active{background:var(--accent);color:#fff}
+.toggle-btn:hover:not(.active){color:var(--text)}
+
+/* Start/End char input */
+.char-input{padding:5px 10px;width:60px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.82em;font-family:'JetBrains Mono',monospace;outline:none;text-align:center}
+.char-input:focus{border-color:var(--accent)}
+.char-input::placeholder{color:var(--text3)}
+
+/* Advanced toggle */
+.adv-toggle{display:flex;align-items:center;gap:6px;padding:8px 14px;cursor:pointer;color:var(--text2);font-size:.78em;font-weight:500;border-top:1px solid var(--border);transition:color .15s;user-select:none}
+.adv-toggle:hover{color:var(--text)}
+.adv-toggle .arrow{transition:transform .2s;font-size:.7em}
+.adv-toggle.open .arrow{transform:rotate(90deg)}
+.adv-content{display:none;padding:0 14px 10px}
+.adv-content.open{display:block}
+
+/* Search + Sort */
+.search-row{display:flex;gap:8px;margin:10px 0}
+.search-box{flex:1;position:relative}
+.search-box input{width:100%;padding:11px 14px 11px 38px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.92em;outline:none;transition:border-color .2s}
 .search-box input:focus{border-color:var(--accent)}
-.search-box input::placeholder{color:var(--text2)}
-.search-box .icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.3em;opacity:.5}
-.search-hint{text-align:center;color:var(--text2);font-size:0.85em;margin-top:8px}
+.search-box input::placeholder{color:var(--text3)}
+.search-box .sicon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:1em;opacity:.35}
+.sort-btn{padding:9px 14px;border-radius:10px;background:var(--card);border:1.5px solid var(--border);color:var(--text2);cursor:pointer;font-size:.8em;font-weight:500;transition:all .15s;white-space:nowrap}
+.sort-btn:hover{border-color:var(--accent);color:var(--text)}
+.sort-btn.active{border-color:var(--accent);color:var(--accent2)}
 
-/* Tabs */
-.tabs{display:flex;gap:8px;margin:24px 0 16px;flex-wrap:wrap}
-.tab{padding:10px 20px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .2s;font-size:0.95em}
-.tab:hover{border-color:var(--accent);color:var(--text)}
-.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.tab .count{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:10px;font-size:0.8em;margin-left:6px}
+/* Results */
+.results-info{display:flex;justify-content:space-between;align-items:center;padding:6px 0;color:var(--text2);font-size:.8em}
 
 /* Domain Grid */
-.domain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:16px 0}
-.domain-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.domain-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 20px rgba(108,92,231,.15)}
-.domain-card .name{font-size:1.1em;font-weight:600;font-family:'SF Mono',Monaco,monospace;color:var(--text)}
-.domain-card .meta{color:var(--text2);font-size:0.8em;margin-top:6px}
-.domain-card .badge{position:absolute;top:8px;right:8px;font-size:0.7em;padding:2px 8px;border-radius:6px;font-weight:600}
-.badge-free{background:rgba(0,184,148,.15);color:var(--green2)}
-.badge-expire{background:rgba(253,203,110,.15);color:var(--orange)}
-.badge-pure{background:rgba(116,185,255,.15);color:var(--blue)}
-.badge-urgent{background:rgba(255,107,107,.15);color:var(--red)}
-
-/* Results info */
-.results-info{color:var(--text2);font-size:0.9em;padding:8px 0;display:flex;justify-content:space-between;align-items:center}
-.sort-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.85em}
-.sort-btn:hover{border-color:var(--accent)}
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin:6px 0}
+.dcard{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.dcard:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,106,239,.1)}
+.dcard .dname{font-size:1em;font-weight:700;font-family:'JetBrains Mono','SF Mono',monospace;letter-spacing:-.01em}
+.dcard .dmeta{color:var(--text2);font-size:.68em;margin-top:3px;display:flex;gap:5px;align-items:center}
+.dcard .dbadge{position:absolute;top:6px;right:7px;font-size:.58em;padding:2px 6px;border-radius:5px;font-weight:700}
+.dcard .dlen{font-size:.58em;padding:1px 5px;border-radius:4px;font-weight:600;background:var(--card3);color:var(--text2)}
+.dbg-available{background:rgba(34,197,142,.12);color:var(--green2)}
+.dbg-grace{background:rgba(240,180,41,.12);color:var(--orange2)}
+.dbg-redemption{background:rgba(239,68,68,.12);color:var(--red2)}
+.dbg-pending_delete{background:rgba(236,72,153,.12);color:var(--pink2)}
+.dbg-expiring{background:rgba(59,130,246,.12);color:var(--blue2)}
 
 /* Pagination */
-.pagination{display:flex;justify-content:center;gap:8px;margin:24px 0}
-.page-btn{padding:8px 16px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .2s}
-.page-btn:hover{border-color:var(--accent);color:var(--text)}
-.page-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.pagination{display:flex;justify-content:center;gap:4px;margin:18px 0}
+.pbtn{padding:5px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-size:.8em;font-weight:500;transition:all .15s}
+.pbtn:hover{border-color:var(--accent);color:var(--text)}
+.pbtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.pbtn:disabled{opacity:.25;cursor:not-allowed}
 
 /* Footer */
-.footer{text-align:center;padding:40px 0;color:var(--text2);font-size:0.85em;border-top:1px solid var(--border);margin-top:40px}
+.footer{text-align:center;padding:20px 0;color:var(--text3);font-size:.72em;border-top:1px solid var(--border);margin-top:18px}
 
-/* Loading */
-.loading{text-align:center;padding:40px;color:var(--text2)}
-.loading .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* Scroll to top */
-.scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:1.2em;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(108,92,231,.3);z-index:100}
+/* Scroll top */
+.scroll-top{position:fixed;bottom:18px;right:18px;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:1em;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100;box-shadow:0 4px 14px rgba(124,106,239,.3)}
 .scroll-top.show{display:flex}
 
-/* Progress bar */
-.progress-wrap{max-width:600px;margin:0 auto 16px}
-.progress-bar{height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--pink));border-radius:3px;transition:width .5s}
-.progress-text{text-align:center;color:var(--text2);font-size:0.8em;margin-top:4px}
+/* Toast */
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:7px 16px;border-radius:8px;font-size:.82em;z-index:200;animation:toastIn .3s;pointer-events:none}
 
-@media(max-width:640px){
-  .header h1{font-size:1.8em}
-  .stats-bar{gap:8px}
-  .stat{min-width:100px;padding:12px 16px}
-  .stat .num{font-size:1.3em}
-  .domain-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+@media(max-width:768px){
+  .stats-grid{grid-template-columns:repeat(3,1fr)}
+  .domain-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}
+  .header h1{font-size:1.5em}
+  .search-row{flex-direction:column}
+  .filter-row{flex-direction:column;align-items:flex-start}
 }
+@media(max-width:480px){.stats-grid{grid-template-columns:repeat(2,1fr)}.container{padding:10px}}
 </style>
 </head>
 <body>
-
 <div class="container">
   <div class="header">
-    <h1>🎯 域名猎手</h1>
-    <p>4字母 .com 域名可用性扫描 | 实时数据</p>
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-text" id="progressText">加载中...</div>
+    <h1><span class="grad">🎯 域名猎手</span></h1>
+    <p>3 / 4 / 5 字母 .com 域名可抢注扫描</p>
+  </div>
+
+  <div class="progress-section" id="progressSection"></div>
+
+  <div class="stats-grid">
+    <div class="stat-card green"><div class="num" id="sAvail">-</div><div class="label">✅ 可注册</div></div>
+    <div class="stat-card blue"><div class="num" id="sExpire">-</div><div class="label">⏰ 即将到期</div></div>
+    <div class="stat-card orange"><div class="num" id="sGrace">-</div><div class="label">⏳ 宽限期</div></div>
+    <div class="stat-card red"><div class="num" id="sRedeem">-</div><div class="label">💰 赎回期</div></div>
+    <div class="stat-card pink"><div class="num" id="sDelete">-</div><div class="label">🗑️ 待删除</div></div>
+    <div class="stat-card cyan"><div class="num" id="sTotal">-</div><div class="label">📊 总计</div></div>
+  </div>
+
+  <!-- Filter Panel -->
+  <div class="filter-panel">
+    <!-- Row 1: Length -->
+    <div class="filter-row">
+      <span class="filter-label">长度</span>
+      <button class="fbtn active" data-filter="len" data-val="all">全部</button>
+      <button class="fbtn len3" data-filter="len" data-val="3">3字母</button>
+      <button class="fbtn len4" data-filter="len" data-val="4">4字母</button>
+      <button class="fbtn len5" data-filter="len" data-val="5">5字母</button>
+      <span class="filter-label" style="margin-left:12px">状态</span>
+      <button class="fbtn active" data-filter="status" data-val="all">全部</button>
+      <button class="fbtn" data-filter="status" data-val="available">✅ 可注册</button>
+      <button class="fbtn" data-filter="status" data-val="expiring">⏰ 到期</button>
+      <button class="fbtn" data-filter="status" data-val="grace">⏳ 宽限</button>
+      <button class="fbtn" data-filter="status" data-val="redemption">💰 赎回</button>
+      <button class="fbtn" data-filter="status" data-val="pending_delete">🗑️ 待删</button>
+    </div>
+    <!-- Row 2: Digit count -->
+    <div class="filter-row">
+      <span class="filter-label">🔢数字</span>
+      <div class="toggle-group" id="digitCountGroup">
+        <button class="toggle-btn active" data-val="all">全部</button>
+        <button class="toggle-btn" data-val="0">0个</button>
+        <button class="toggle-btn" data-val="1">1个</button>
+        <button class="toggle-btn" data-val="2">2个</button>
+        <button class="toggle-btn" data-val="3">3个</button>
+        <button class="toggle-btn" data-val="4">4个</button>
+        <button class="toggle-btn" data-val="5">5个</button>
+      </div>
+      <span class="filter-label" style="margin-left:12px">🔤字母</span>
+      <div class="toggle-group" id="letterCountGroup">
+        <button class="toggle-btn active" data-val="all">全部</button>
+        <button class="toggle-btn" data-val="1">1个</button>
+        <button class="toggle-btn" data-val="2">2个</button>
+        <button class="toggle-btn" data-val="3">3个</button>
+        <button class="toggle-btn" data-val="4">4个</button>
+        <button class="toggle-btn" data-val="5">5个</button>
+      </div>
+    </div>
+    <!-- Row 3: Contain type -->
+    <div class="filter-row">
+      <span class="filter-label">包含</span>
+      <div class="toggle-group" id="containGroup">
+        <button class="toggle-btn active" data-val="all">全部</button>
+        <button class="toggle-btn" data-val="vowel">元音 (aeiou)</button>
+        <button class="toggle-btn" data-val="no-vowel">无元音</button>
+        <button class="toggle-btn" data-val="repeat">有重复字母</button>
+      </div>
+      <span class="filter-label" style="margin-left:12px">精准包含</span>
+      <input class="char-input" id="containsExact" placeholder="如 ab" maxlength="10" style="width:80px">
+      <span class="filter-label">模糊包含</span>
+      <input class="char-input" id="containsFuzzy" placeholder="如 abc" maxlength="10" style="width:80px">
+      <span class="filter-label">不含</span>
+      <input class="char-input" id="notContains" placeholder="如 xyz" maxlength="10" style="width:80px">
+    </div>
+    <!-- Row 3: Start/End -->
+    <div class="filter-row">
+      <span class="filter-label">开头</span>
+      <input class="char-input" id="startChar" placeholder="如 ab" maxlength="4">
+      <span class="filter-label">结尾</span>
+      <input class="char-input" id="endChar" placeholder="如 xyz" maxlength="4">
+      <span class="filter-label" style="margin-left:12px">排除</span>
+      <input class="char-input" id="excludeChars" placeholder="如 0,1" maxlength="10" style="width:80px">
+      <!-- Advanced toggle -->
+      <div style="flex:1"></div>
+      <div class="adv-toggle" id="advToggle" onclick="toggleAdv()">
+        <span class="arrow">▶</span> 高级筛选
+      </div>
+    </div>
+    <!-- Advanced content -->
+    <div class="adv-content" id="advContent">
+      <div class="filter-row" style="border-top:none;padding-top:6px">
+        <span class="filter-label">可注册天数≤</span>
+        <input class="char-input" id="maxDays" placeholder="如 30" maxlength="3" style="width:60px">
+      </div>
+      <div class="filter-row" style="border-top:none">
+        <span class="filter-label">排序</span>
+        <div class="toggle-group" id="sortGroup">
+          <button class="toggle-btn active" data-val="name-asc">名称 ↑</button>
+          <button class="toggle-btn" data-val="name-desc">名称 ↓</button>
+          <button class="toggle-btn" data-val="days-asc">到期 ↑</button>
+          <button class="toggle-btn" data-val="len-asc">长度 ↑</button>
+        </div>
+        <div style="flex:1"></div>
+        <button class="fbtn" id="resetBtn" onclick="resetFilters()" style="background:var(--red-bg);border-color:rgba(239,68,68,.2);color:var(--red2)">🔄 重置全部</button>
+      </div>
     </div>
   </div>
 
-  <div class="stats-bar" id="statsBar">
-    <div class="stat green"><div class="num" id="statAvail">-</div><div class="label">可注册</div></div>
-    <div class="stat orange"><div class="num" id="statExpire">-</div><div class="label">即将到期</div></div>
-    <div class="stat"><div class="num" id="statPure">-</div><div class="label">纯字母</div></div>
-    <div class="stat"><div class="num" id="statMixed">-</div><div class="label">含数字</div></div>
-  </div>
-
-  <div class="search-box">
-    <span class="icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="搜索域名，如 ab 匹配 abcd.com 和 acbd.com ..." autocomplete="off">
-  </div>
-  <div class="search-hint">支持模糊匹配：输入任意字符，匹配域名中任意位置包含该字符序列的域名</div>
-
-  <div class="tabs">
-    <div class="tab active" data-tab="available">✅ 可注册 <span class="count" id="tabAvail">0</span></div>
-    <div class="tab" data-tab="expiring">⏰ 即将到期 <span class="count" id="tabExpire">0</span></div>
-    <div class="tab" data-tab="pure">🔤 纯字母 <span class="count" id="tabPure">0</span></div>
+  <!-- Search -->
+  <div class="search-row">
+    <div class="search-box">
+      <span class="sicon">🔍</span>
+      <input type="text" id="searchInput" placeholder="搜索域名... 支持模糊匹配，如 ab 匹配 abcd.com 和 acbd.com" autocomplete="off">
+    </div>
   </div>
 
   <div class="results-info">
     <span id="resultCount">加载中...</span>
-    <button class="sort-btn" id="sortBtn" onclick="toggleSort()">按名称排序</button>
+    <span id="scanInfo" style="font-size:.78em;color:var(--text3)"></span>
   </div>
 
   <div class="domain-grid" id="domainGrid">
-    <div class="loading"><div class="spinner"></div>正在加载域名数据...</div>
+    <div style="text-align:center;padding:40px;color:var(--text2);grid-column:1/-1">⏳ 加载数据中...</div>
   </div>
 
   <div class="pagination" id="pagination"></div>
 
   <div class="footer">
-    <p>域名猎手 — 数据来自 WHOIS 实时查询 | 扫描仍在进行中，数据持续更新</p>
-    <p style="margin-top:8px">Generated by <a href="https://github.com/handsomezhuzhu/name" style="color:var(--accent2)">Domain Hunter</a></p>
+    <p>域名猎手 — WHOIS 实时扫描 · 数据自动更新</p>
+    <p style="margin-top:3px"><a href="https://github.com/handsomezhuzhu/name" style="color:var(--accent2)">GitHub</a></p>
   </div>
 </div>
-
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
-let DATA = {available:[], expiring:[]};
-let currentTab = 'available';
+let DATA = [];
 let currentPage = 1;
-let sortMode = 'name'; // name | days
-const PAGE_SIZE = 120;
+const PAGE_SIZE = 150;
 
-// Fuzzy match: "ab" matches "abcd.com" AND "acbd.com"
-function fuzzyMatch(domain, query) {
-  const q = query.toLowerCase().replace('.com','');
-  const d = domain.toLowerCase().replace('.com','');
+// Filter state
+let F = {
+  len: 'all', status: 'all', digitCount: 'all', letterCount: 'all',
+  contain: 'all', start: '', end: '', exclude: '',
+  containsExact: '', containsFuzzy: '', notContains: '', maxDays: '',
+  sort: 'name-asc'
+};
+
+const STATUS_CN = {available:'可注册',grace:'宽限期',redemption:'赎回期',pending_delete:'待删除',expiring:'即将到期'};
+const STATUS_BADGE = {available:'dbg-available',grace:'dbg-grace',redemption:'dbg-redemption',pending_delete:'dbg-pending_delete',expiring:'dbg-expiring'};
+const VOWELS = new Set('aeiou');
+const isAlpha = s => /^[a-z]+$/.test(s);
+const hasDigit = s => /\d/.test(s);
+
+function getLen(d) { return d.domain.replace('.com','').length; }
+
+function fuzzyMatch(d, q) {
   if (!q) return true;
-  // Substring match
   if (d.includes(q)) return true;
-  // Character sequence match (order preserved, not necessarily adjacent)
   let qi = 0;
   for (let di = 0; di < d.length && qi < q.length; di++) {
     if (d[di] === q[qi]) qi++;
@@ -166,55 +305,125 @@ function fuzzyMatch(domain, query) {
   return qi === q.length;
 }
 
-function getFilteredData() {
-  const query = document.getElementById('searchInput').value.trim();
-  let list;
-  if (currentTab === 'available') list = DATA.available;
-  else if (currentTab === 'expiring') list = DATA.expiring;
-  else list = DATA.available.filter(d => d.type === 'pure');
+function getFiltered() {
+  let list = DATA;
+  const q = document.getElementById('searchInput').value.trim().toLowerCase().replace('.com','');
 
-  if (query) {
-    list = list.filter(item => fuzzyMatch(item.domain, query));
-  }
+  list = list.filter(d => {
+    const name = d.domain.replace('.com','');
 
-  if (sortMode === 'days' && currentTab === 'expiring') {
-    list = [...list].sort((a,b) => (a.days_left||999) - (b.days_left||999));
-  } else {
-    list = [...list].sort((a,b) => a.domain.localeCompare(b.domain));
-  }
+    // Length
+    if (F.len !== 'all' && name.length !== parseInt(F.len)) return false;
+
+    // Status
+    if (F.status !== 'all' && d.status !== F.status) return false;
+
+    // Digit count (exact)
+    if (F.digitCount !== 'all') {
+      const digitCnt = (name.match(/\d/g)||[]).length;
+      if (digitCnt !== parseInt(F.digitCount)) return false;
+    }
+
+    // Letter count (exact)
+    if (F.letterCount !== 'all') {
+      const letterCnt = (name.match(/[a-z]/g)||[]).length;
+      if (letterCnt !== parseInt(F.letterCount)) return false;
+    }
+
+    // Start
+    if (F.start && !name.startsWith(F.start)) return false;
+
+    // End
+    if (F.end && !name.endsWith(F.end)) return false;
+
+    // Exclude chars
+    if (F.exclude) {
+      for (const c of F.exclude) {
+        if (name.includes(c)) return false;
+      }
+    }
+
+    // Contain: vowel
+    if (F.contain === 'vowel') {
+      if (![...name].some(c => VOWELS.has(c))) return false;
+    }
+    // No vowel
+    if (F.contain === 'no-vowel') {
+      if ([...name].some(c => VOWELS.has(c))) return false;
+    }
+    // Repeat letters
+    if (F.contain === 'repeat') {
+      if (new Set(name).size === name.length) return false;
+    }
+
+    // Contains: exact substring (精准包含)
+    if (F.containsExact && !name.includes(F.containsExact)) return false;
+    // Contains: fuzzy (模糊包含 — all chars must appear in order)
+    if (F.containsFuzzy) {
+      let fi = 0;
+      for (let ni = 0; ni < name.length && fi < F.containsFuzzy.length; ni++) {
+        if (name[ni] === F.containsFuzzy[fi]) fi++;
+      }
+      if (fi !== F.containsFuzzy.length) return false;
+    }
+    // Advanced: not contains
+    if (F.notContains) {
+      for (const c of F.notContains) {
+        if (name.includes(c)) return false;
+      }
+    }
+    // Advanced: max days
+    if (F.maxDays && d.days_left != null) {
+      if (d.days_left > parseInt(F.maxDays) || d.days_left < 0) return false;
+    }
+    if (F.maxDays && d.days_left == null && F.status !== 'all') {
+      // For 'available', no days_left — include
+    }
+
+    // Search
+    if (q && !fuzzyMatch(name, q)) return false;
+
+    return true;
+  });
+
+  // Sort
+  list = [...list];
+  const s = F.sort;
+  if (s === 'name-asc') list.sort((a,b) => a.domain.localeCompare(b.domain));
+  else if (s === 'name-desc') list.sort((a,b) => b.domain.localeCompare(a.domain));
+  else if (s === 'days-asc') list.sort((a,b) => (a.days_left??9999) - (b.days_left??9999));
+  else if (s === 'len-asc') list.sort((a,b) => getLen(a)-getLen(b) || a.domain.localeCompare(b.domain));
+
   return list;
 }
 
 function render() {
-  const list = getFilteredData();
+  const list = getFiltered();
   const totalPages = Math.ceil(list.length / PAGE_SIZE);
   if (currentPage > totalPages) currentPage = 1;
   const start = (currentPage - 1) * PAGE_SIZE;
   const pageData = list.slice(start, start + PAGE_SIZE);
 
   const grid = document.getElementById('domainGrid');
+  if (!DATA.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:50px;color:var(--text2);grid-column:1/-1">⏳ 加载数据中...</div>';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
   if (pageData.length === 0) {
-    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2);grid-column:1/-1">没有找到匹配的域名</div>';
+    grid.innerHTML = '<div style="text-align:center;padding:50px;color:var(--text2);grid-column:1/-1">😶 没有匹配的域名</div>';
   } else {
     grid.innerHTML = pageData.map(item => {
-      if (item.domain) {
-        // Expiring domain
-        const urgent = item.days_left <= 7;
-        return `<div class="domain-card" onclick="copyDomain('${item.domain}')">
-          <span class="badge ${urgent?'badge-urgent':'badge-expire'}">${item.days_left}天</span>
-          <div class="name">${item.domain}</div>
-          <div class="meta">${item.expiry||''} · ${item.registrar||''}</div>
-        </div>`;
-      }
-      return '';
-    }).join('') || list.slice(start, start + PAGE_SIZE).map(item => {
-      const domain = typeof item === 'string' ? item : item.domain;
-      const type = typeof item === 'string' ? '' : item.type;
-      return `<div class="domain-card" onclick="copyDomain('${domain}')">
-        <span class="badge badge-free">可注册</span>
-        ${type==='pure'?'<span class="badge badge-pure" style="top:8px;right:auto;left:8px">纯字母</span>':''}
-        <div class="name">${domain}</div>
-        <div class="meta">点击复制</div>
+      const badge = STATUS_BADGE[item.status] || 'dbg-available';
+      const label = STATUS_CN[item.status] || item.status;
+      const len = getLen(item);
+      const daysTag = item.days_left != null ? `<span style="color:${item.days_left<10?'var(--red2)':item.days_left<30?'var(--orange2)':'var(--text3)'}">${item.days_left}d</span>` : '';
+      const expiryTag = item.expiry ? `<span>${item.expiry}</span>` : '';
+      const alphaTag = !hasDigit(item.domain.replace('.com','')) ? '<span style="color:var(--green2)">纯字母</span>' : '';
+      return `<div class="dcard" onclick="copyD('${item.domain}')">
+        <span class="dbadge ${badge}">${label}${item.days_left!=null?' '+item.days_left+'d':''}</span>
+        <div class="dname">${item.domain}</div>
+        <div class="dmeta"><span class="dlen">${len}位</span>${alphaTag}${expiryTag}${daysTag?'<span>'+daysTag+'</span>':''}</div>
       </div>`;
     }).join('');
   }
@@ -222,84 +431,150 @@ function render() {
   // Pagination
   const pag = document.getElementById('pagination');
   if (totalPages <= 1) { pag.innerHTML = ''; return; }
-  let html = '';
-  html += `<button class="page-btn" onclick="goPage(1)" ${currentPage===1?'disabled':''}>首页</button>`;
-  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
-  const range = 3;
-  for (let i = Math.max(1,currentPage-range); i <= Math.min(totalPages,currentPage+range); i++) {
-    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
-  }
-  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
-  html += `<button class="page-btn" onclick="goPage(${totalPages})" ${currentPage===totalPages?'disabled':''}>末页</button>`;
+  let html = `<button class="pbtn" onclick="goPage(1)" ${currentPage===1?'disabled':''}>‹‹</button>`;
+  html += `<button class="pbtn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  const r = 3;
+  let ps = Math.max(1, currentPage-r), pe = Math.min(totalPages, currentPage+r);
+  if (ps > 1) html += `<button class="pbtn" onclick="goPage(1)">1</button><button class="pbtn" disabled>…</button>`;
+  for (let i = ps; i <= pe; i++) html += `<button class="pbtn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  if (pe < totalPages) html += `<button class="pbtn" disabled>…</button><button class="pbtn" onclick="goPage(${totalPages})">${totalPages}</button>`;
+  html += `<button class="pbtn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+  html += `<button class="pbtn" onclick="goPage(${totalPages})" ${currentPage===totalPages?'disabled':''}>››</button>`;
   pag.innerHTML = html;
-
-  document.getElementById('resultCount').textContent = `显示 ${start+1}-${Math.min(start+PAGE_SIZE,list.length)} / 共 ${list.length} 个域名`;
+  document.getElementById('resultCount').textContent = list.length > 0
+    ? `显示 ${start+1}-${Math.min(start+PAGE_SIZE,list.length)} / ${list.length.toLocaleString()} 个域名`
+    : '无结果';
 }
 
-function goPage(p) { currentPage = p; render(); window.scrollTo({top:300,behavior:'smooth'}); }
-
-function toggleSort() {
-  sortMode = sortMode === 'name' ? 'days' : 'name';
-  document.getElementById('sortBtn').textContent = sortMode === 'name' ? '按名称排序' : '按到期时间排序';
-  currentPage = 1;
-  render();
-}
-
-function copyDomain(domain) {
+function goPage(p) { currentPage = p; render(); window.scrollTo({top:140,behavior:'smooth'}); }
+function copyD(domain) {
   navigator.clipboard.writeText(domain).then(() => {
-    const toast = document.createElement('div');
-    toast.textContent = '✅ 已复制 ' + domain;
-    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:10px 20px;border-radius:8px;font-size:0.9em;z-index:200;animation:fadeIn .3s';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 1500);
-  });
+    const t = document.createElement('div'); t.className = 'toast'; t.textContent = '✅ 已复制 ' + domain;
+    document.body.appendChild(t); setTimeout(() => t.remove(), 1200);
+  }).catch(() => {});
 }
 
-// Tab switching
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    currentTab = tab.dataset.tab;
-    currentPage = 1;
-    sortMode = 'name';
-    document.getElementById('sortBtn').textContent = '按名称排序';
-    render();
+// Filter button clicks
+document.querySelectorAll('.fbtn[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const g = btn.dataset.filter;
+    document.querySelectorAll(`.fbtn[data-filter="${g}"]`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    F[g] = btn.dataset.val;
+    currentPage = 1; render();
   });
 });
+
+// Toggle groups
+document.querySelectorAll('.toggle-group').forEach(group => {
+  group.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const gid = group.id;
+      if (gid === 'digitCountGroup') F.digitCount = btn.dataset.val;
+      if (gid === 'letterCountGroup') F.letterCount = btn.dataset.val;
+      if (gid === 'containGroup') F.contain = btn.dataset.val;
+      if (gid === 'sortGroup') { F.sort = btn.dataset.val; }
+      currentPage = 1; render();
+    });
+  });
+});
+
+// Text inputs with debounce
+let debounce;
+function bindInput(id, key, delay=200) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => { F[key] = el.value.trim().toLowerCase(); currentPage = 1; render(); }, delay);
+  });
+}
+bindInput('startChar', 'start');
+bindInput('endChar', 'end');
+bindInput('excludeChars', 'exclude');
+bindInput('containsExact', 'containsExact');
+bindInput('containsFuzzy', 'containsFuzzy');
+bindInput('notContains', 'notContains');
+bindInput('maxDays', 'maxDays');
 
 // Search
-let searchTimer;
 document.getElementById('searchInput').addEventListener('input', () => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => { currentPage = 1; render(); }, 200);
+  clearTimeout(debounce); debounce = setTimeout(() => { currentPage = 1; render(); }, 150);
 });
 
-// Scroll to top button
+// Advanced toggle
+function toggleAdv() {
+  const t = document.getElementById('advToggle');
+  const c = document.getElementById('advContent');
+  t.classList.toggle('open'); c.classList.toggle('open');
+}
+
+// Reset
+function resetFilters() {
+  F = {len:'all',status:'all',digitCount:'all',letterCount:'all',contain:'all',start:'',end:'',exclude:'',containsExact:'',containsFuzzy:'',notContains:'',maxDays:'',sort:'name-asc'};
+  document.querySelectorAll('.filter-panel .fbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-panel .fbtn[data-val="all"]').forEach(b => b.classList.add('active'));
+  document.querySelectorAll('.toggle-group').forEach(g => {
+    g.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    const first = g.querySelector('.toggle-btn'); if(first) first.classList.add('active');
+  });
+  ['startChar','endChar','excludeChars','containsExact','containsFuzzy','notContains','maxDays'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  currentPage = 1; render();
+}
+
+// Scroll top
 window.addEventListener('scroll', () => {
-  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300);
 });
 
-// Load data
+// Load
 fetch('domains.json').then(r=>r.json()).then(data => {
-  DATA.available = data.available || [];
-  DATA.expiring = data.expiring || [];
-  const s = data.stats || {};
-  document.getElementById('statAvail').textContent = (s.available_count||0).toLocaleString();
-  document.getElementById('statExpire').textContent = (s.expiring_count||0).toLocaleString();
-  document.getElementById('statPure').textContent = (s.pure_letter_count||0).toLocaleString();
-  document.getElementById('statMixed').textContent = (s.with_number_count||0).toLocaleString();
-  document.getElementById('tabAvail').textContent = (s.available_count||0).toLocaleString();
-  document.getElementById('tabExpire').textContent = (s.expiring_count||0).toLocaleString();
-  document.getElementById('tabPure').textContent = (s.pure_letter_count||0).toLocaleString();
-  const pct = s.total_target ? Math.min(100, (s.total_checked||0)*100/s.total_target) : 0;
-  document.getElementById('progressFill').style.width = pct+'%';
-  document.getElementById('progressText').textContent = `扫描进度: ${(s.total_checked||0).toLocaleString()} / ${(s.total_target||1679616).toLocaleString()} (${pct.toFixed(1)}%)`;
+  DATA = data.domains || [];
+  const counts = {};
+  DATA.forEach(d => { counts[d.status] = (counts[d.status]||0)+1; });
+  document.getElementById('sAvail').textContent = (counts.available||0).toLocaleString();
+  document.getElementById('sExpire').textContent = (counts.expiring||0).toLocaleString();
+  document.getElementById('sGrace').textContent = (counts.grace||0).toLocaleString();
+  document.getElementById('sRedeem').textContent = (counts.redemption||0).toLocaleString();
+  document.getElementById('sDelete').textContent = (counts.pending_delete||0).toLocaleString();
+  document.getElementById('sTotal').textContent = DATA.length.toLocaleString();
+
+  const len3 = DATA.filter(d=>getLen(d)===3).length;
+  const len4 = DATA.filter(d=>getLen(d)===4).length;
+  const len5 = DATA.filter(d=>getLen(d)===5).length;
+  const alpha = DATA.filter(d=>!hasDigit(d.domain.replace('.com',''))).length;
+  document.querySelector('[data-val="3"]').innerHTML = `3字母 <span class="cnt">${len3.toLocaleString()}</span>`;
+  document.querySelector('[data-val="4"]').innerHTML = `4字母 <span class="cnt">${len4.toLocaleString()}</span>`;
+  document.querySelector('[data-val="5"]').innerHTML = `5字母 <span class="cnt">${len5.toLocaleString()}</span>`;
+  document.querySelector('[data-val="all"]').innerHTML = `全部 <span class="cnt">${DATA.length.toLocaleString()}</span>`;
+
+  // Progress bars
+  const checked = data.checked || {};
+  const targets = {3:46656, 4:1679616, 5:11881376};
+  const ps = document.getElementById('progressSection');
+  let ph = '';
+  for (const [len, target] of Object.entries(targets)) {
+    const done = checked['len'+len] || 0;
+    const pct = Math.min(100, done*100/target);
+    ph += `<div class="progress-row">
+      <span class="progress-label">${len}位</span>
+      <div class="progress-bar"><div class="progress-fill len${len}" style="width:${pct.toFixed(1)}%"></div></div>
+      <span class="progress-pct">${done.toLocaleString()} / ${target.toLocaleString()} (${pct.toFixed(1)}%)</span>
+    </div>`;
+  }
+  ps.innerHTML = ph;
+  const totalChecked = Object.values(checked).reduce((a,b)=>a+(b||0),0);
+  document.getElementById('scanInfo').textContent = `已扫描 ${totalChecked.toLocaleString()} / ${(targets[3]+targets[4]+targets[5]).toLocaleString()}`;
+
   render();
 }).catch(e => {
-  document.getElementById('domainGrid').innerHTML = '<div class="loading">数据加载失败，请刷新重试</div>';
+  console.error(e);
+  document.getElementById('domainGrid').innerHTML = '<div style="text-align:center;padding:50px;color:var(--red2);grid-column:1/-1">❌ 数据加载失败</div>';
 });
 </script>
-<style>@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}</style>
 </body>
 </html>
