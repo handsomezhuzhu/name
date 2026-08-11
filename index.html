@@ -35,8 +35,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .progress-bar{flex:1;height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
 .progress-fill{height:100%;border-radius:3px;transition:width .8s ease}
 .progress-fill.len3{background:linear-gradient(90deg,var(--cyan),var(--blue))}
-.progress-fill.len4{background:linear-gradient(90deg,var(--accent),var(--pink))}
-.progress-fill.len5{background:linear-gradient(90deg,var(--orange),var(--red))}
 .progress-pct{font-size:.7em;color:var(--text3);min-width:65px;font-variant-numeric:tabular-nums}
 
 /* Stats Grid */
@@ -61,8 +59,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .fbtn:hover{border-color:var(--accent);color:var(--text)}
 .fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
 .fbtn.len3.active{background:var(--cyan);border-color:var(--cyan)}
-.fbtn.len4.active{background:var(--accent);border-color:var(--accent)}
-.fbtn.len5.active{background:var(--orange);border-color:var(--orange)}
 .fbtn .cnt{opacity:.65;font-size:.85em;margin-left:2px}
 
 /* Toggle button (two-state) */
@@ -145,7 +141,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="container">
   <div class="header">
     <h1><span class="grad">🎯 域名猎手</span></h1>
-    <p>3 / 4 字母 .com 域名可抢注扫描</p>
+    <p>3 字母 .com 域名可抢注扫描</p>
   </div>
 
   <div class="progress-section" id="progressSection"></div>
@@ -166,7 +162,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
       <span class="filter-label">长度</span>
       <button class="fbtn active" data-filter="len" data-val="all">全部</button>
       <button class="fbtn len3" data-filter="len" data-val="3">3字母</button>
-      <button class="fbtn len4" data-filter="len" data-val="4">4字母</button>
       <span class="filter-label" style="margin-left:12px">状态</span>
       <button class="fbtn active" data-filter="status" data-val="all">全部</button>
       <button class="fbtn" data-filter="status" data-val="available">✅ 可注册</button>
@@ -184,8 +179,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
         <button class="toggle-btn" data-val="1">1个</button>
         <button class="toggle-btn" data-val="2">2个</button>
         <button class="toggle-btn" data-val="3">3个</button>
-        <button class="toggle-btn" data-val="4">4个</button>
-        <button class="toggle-btn" data-val="5">5个</button>
       </div>
       <span class="filter-label" style="margin-left:12px">🔤字母</span>
       <div class="toggle-group" id="letterCountGroup">
@@ -193,8 +186,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
         <button class="toggle-btn" data-val="1">1个</button>
         <button class="toggle-btn" data-val="2">2个</button>
         <button class="toggle-btn" data-val="3">3个</button>
-        <button class="toggle-btn" data-val="4">4个</button>
-        <button class="toggle-btn" data-val="5">5个</button>
       </div>
     </div>
     <!-- Row 3: Contain type -->
@@ -545,15 +536,13 @@ fetch('domains.json').then(r=>r.json()).then(data => {
   document.getElementById('sTotal').textContent = DATA.length.toLocaleString();
 
   const len3 = DATA.filter(d=>getLen(d)===3).length;
-  const len4 = DATA.filter(d=>getLen(d)===4).length;
   const alpha = DATA.filter(d=>!hasDigit(d.domain.replace('.com',''))).length;
   document.querySelector('[data-val="3"]').innerHTML = `3字母 <span class="cnt">${len3.toLocaleString()}</span>`;
-  document.querySelector('[data-val="4"]').innerHTML = `4字母 <span class="cnt">${len4.toLocaleString()}</span>`;
   document.querySelector('[data-val="all"]').innerHTML = `全部 <span class="cnt">${DATA.length.toLocaleString()}</span>`;
 
   // Progress bars
   const checked = data.checked || {};
-  const targets = {3:46656, 4:1679616};
+  const targets = {3:46656};
   const ps = document.getElementById('progressSection');
   let ph = '';
   for (const [len, target] of Object.entries(targets)) {
@@ -567,7 +556,7 @@ fetch('domains.json').then(r=>r.json()).then(data => {
   }
   ps.innerHTML = ph;
   const totalChecked = Object.values(checked).reduce((a,b)=>a+(b||0),0);
-  document.getElementById('scanInfo').textContent = `已扫描 ${totalChecked.toLocaleString()} / ${(targets[3]+targets[4]+targets[5]).toLocaleString()}`;
+  document.getElementById('scanInfo').textContent = `已扫描 ${totalChecked.toLocaleString()} / ${targets[3].toLocaleString()}`;
 
   render();
 }).catch(e => {
