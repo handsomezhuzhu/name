@@ -119,7 +119,9 @@ def save_state(state):
 
 
 def build_output(domains_map):
-    """domains_map: {domain_with_com: [domain,status,expiry,days_left]}"""
+    """domains_map: {domain_with_com: [domain,status,expiry,days_left]}
+    Only bumps 'updated' timestamp when the actual domain list changes,
+    so git sees no diff on pure re-runs."""
     domains = list(domains_map.values())
     stats = {
         "total_checked": TOTAL,
@@ -134,12 +136,24 @@ def build_output(domains_map):
         },
         "checked": {"len3": TOTAL, "len4": 0, "len5": 0},
     }
+    # Determine 'updated': reuse previous if domain data unchanged
+    prev_updated = None
+    if os.path.exists(DOMAINS_JSON):
+        try:
+            with open(DOMAINS_JSON) as f:
+                prev = json.load(f)
+            prev_domains = prev.get("domains")
+            if prev_domains == domains:
+                prev_updated = prev.get("updated")
+        except Exception:
+            pass
     now = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+    updated = prev_updated if prev_updated else now
     return {
         "stats": stats,
         "counts": stats["counts"],
         "checked": stats["checked"],
-        "updated": now,
+        "updated": updated,
         "domains": domains,
     }
 
