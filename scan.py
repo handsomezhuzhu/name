@@ -168,9 +168,8 @@ def write_datajs(payload):
 
 def scan_all():
     state = load_state()
-    checked_set = set(state.get("checked", []))
     domains_map = state.get("domains", {})
-    print(f"已扫描: {len(checked_set)}/{TOTAL}", flush=True)
+    print(f"已有记录: {len(domains_map)}", flush=True)
 
     # Generate all candidates
     all_doms = [''.join(p) for p in itertools.product(CHARS, repeat=LEN)]
@@ -178,8 +177,17 @@ def scan_all():
     if limit > 0:
         all_doms = all_doms[:limit]
 
-    pending = [d for d in all_doms if d not in checked_set]
-    print(f"待扫描: {len(pending)}", flush=True)
+    # 每日全量重扫: 不再跳过已检查域名, 保证数据每日新鲜
+    # (46656个 RDAP 查询约 12 分钟, 每日 06:00 cron 可接受)
+    # REFRESH=0 时保留旧的断点续跑行为(仅扫未检查的)
+    refresh = os.environ.get("REFRESH", "1") == "1"
+    if refresh:
+        pending = all_doms
+        print("模式: 每日全量刷新", flush=True)
+    else:
+        checked_set = set(state.get("checked", []))
+        pending = [d for d in all_doms if d not in checked_set]
+        print(f"模式: 断点续跑, 待扫描: {len(pending)}", flush=True)
 
     t0 = time.time()
     done = 0
@@ -187,6 +195,9 @@ def scan_all():
 
     def worker(d):
         return d, classify(d)
+
+    # 全量刷新模式下 checked_set 就是本次扫描全集; 断点模式用历史记录
+    checked_set = set(pending) if refresh else set(state.get("checked", []))
 
     with cf.ThreadPoolExecutor(max_workers=CONCURRENCY) as ex:
         futures = {ex.submit(worker, d): d for d in pending}
