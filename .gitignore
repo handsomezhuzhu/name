@@ -1,0 +1,4 @@
+scan_progress.json
+scan_run.log
+*.tmp
+__pycache__/
