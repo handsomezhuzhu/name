@@ -168,7 +168,12 @@ def write_datajs(payload):
 
 def scan_all():
     state = load_state()
-    domains_map = state.get("domains", {})
+    # 全量刷新模式必须从空集重建：classify() 对"已注册但不在 90 天临期窗内"的域名
+    # 返回 (None, False)（即"不感兴趣，丢弃"）。若沿用旧 domains_map，已续费多年的
+    # 域名会带着过期 expiry 永久留在结果里（2026-10-20 审计：8738 条中 3868 条已失效，
+    # 部分甚至已续到 2035/2036 年）。断点续跑模式才需要历史记录。
+    refresh = os.environ.get("REFRESH", "1") == "1"
+    domains_map = {} if refresh else state.get("domains", {})
     print(f"已有记录: {len(domains_map)}", flush=True)
 
     # Generate all candidates
@@ -180,7 +185,6 @@ def scan_all():
     # 每日全量重扫: 不再跳过已检查域名, 保证数据每日新鲜
     # (46656个 RDAP 查询约 12 分钟, 每日 06:00 cron 可接受)
     # REFRESH=0 时保留旧的断点续跑行为(仅扫未检查的)
-    refresh = os.environ.get("REFRESH", "1") == "1"
     if refresh:
         pending = all_doms
         print("模式: 每日全量刷新", flush=True)
